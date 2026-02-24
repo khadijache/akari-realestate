@@ -127,3 +127,20 @@ a {
   cursor: pointer;
   transform: scale(1.1);
 }
+/* تنسيق عام للموقع عند تحويله للغة العربية */
+body[dir='rtl'] {
+  font-family: 'Cairo', 'Tajawal', sans-serif; /* خطوط عربية أنيقة */
+  text-align: right;
+}
+
+/* تنسيق عام للموقع عند تحويله للغة الإنجليزية */
+body[dir='ltr'] {
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+}
+
+/* لضمان أن الفليكس بوكس ينعكس تلقائياً */
+.flexCenter, .flexStart, .flexEnd {
+  display: flex;
+  gap: 1rem;
+}

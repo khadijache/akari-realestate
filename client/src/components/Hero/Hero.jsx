@@ -1,72 +1,94 @@
+import React, { useState } from "react"; // تمت إضافة useState هنا لإصلاح الخطأ
 import "./Hero.css";
-import CountUp from "react-countup";
-import { motion } from "framer-motion";
-import SearchBar from "../SearchBar/SearchBar";
+import { HiSearch } from "react-icons/hi";
+import { useTranslation } from "react-i18next";
+
 const Hero = () => {
+  const { t } = useTranslation();
+
+  // حالات لتخزين ما يختاره المستخدم
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [price, setPrice] = useState(""); // حالة السعر الجديد
+
+  const handleSearch = () => {
+    // عرض القيم في الكونسول للتأكد
+    console.log("المدينة:", selectedCity);
+    console.log("النوع:", selectedType);
+    console.log("السعر المطلوب:", price);
+  };
+
   return (
     <section className="hero-wrapper">
-      <div className="paddings innerWidth flexCenter hero-container">
-        {/* left side */}
-        <div className="flexColStart hero-left">
-          <div className="hero-title">
-            <div className="orange-circle" />
-            <motion.h1
-            initial={{ y: "2rem", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 2,
-              type: "ease-in",
-            }}
-            >
-              Discover <br />
-              Most Suitable
-              <br /> Property
-            </motion.h1>
-          </div>
-          <div className="flexColStart secondaryText flexhero-des">
-            <span>Find a variety of properties that suit you very easilty</span>
-            <span>Forget all difficulties in finding a residence for you</span>
-          </div>
+      <div className="hero-container-bg">
+        <div className="flexColCenter paddings innerWidth hero-contents">
+          
+          <h1 className="hero-main-title">{t("heroTitle")}</h1>
+          
+          <button className="view-listings-btn">
+            {t("view_listings")}
+          </button>
 
-          <SearchBar/>
-
-          <div className="flexCenter stats">
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp start={8800} end={9000} duration={4} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Premium Product</span>
+          {/* شريط البحث المتقدم */}
+          <div className="flexCenter search-bar-advanced">
+            
+            {/* القسم الأول: المدينة */}
+            <div className="search-item">
+              <label>{t("city")}</label>
+              <select 
+                className="search-select"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                <option value="">{t("select_city")}</option>
+                <option value="djelfa">{t("djelfa")}</option>
+                <option value="hassi_bahbah">{t("hassi_bahbah")}</option>
+              </select> 
             </div>
 
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp start={1950} end={2000} duration={4} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Happy Customer</span>
+            <div className="divider" />
+
+            {/* القسم الثاني: النوع */}
+            <div className="search-item">
+              <label>{t("type")}</label>
+              <select 
+                className="search-select"
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+              >
+                <option value="">{t("type")}</option>
+                <option value="apartment">{t("apartment")}</option>
+                <option value="house">{t("house")}</option>
+                <option value="magasin">{t("magasin")}</option>
+              </select>
             </div>
 
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp end={28} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Awards Winning</span>
+            <div className="divider" />
+
+            {/* القسم الثالث: السعر (خانة إدخال بسيطة) */}
+            <div className="search-item">
+              <label>{t("price") || "السعر"}</label>
+              <input 
+                type="number" 
+                placeholder="00.00" 
+                className="price-input"
+                style={{
+                  border: "none",
+                  outline: "none",
+                  width: "100px",
+                  fontSize: "0.9rem"
+                }}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
             </div>
+
+            {/* زر البحث الجانبي */}
+            <button className="search-icon-btn" onClick={handleSearch}>
+              <HiSearch size={25} color="white" />
+            </button>
           </div>
-        </div>
 
-        {/* right side */}
-        <div className="flexCenter hero-right">
-          <motion.div
-            initial={{ x: "7rem", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{
-              duration: 2,
-              type: "ease-in",
-            }}
-            className="image-container"
-          >
-            <img src="./hero-image.png" alt="houses" />
-          </motion.div>
         </div>
       </div>
     </section>

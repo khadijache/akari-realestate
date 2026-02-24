@@ -1,0 +1,30 @@
+.agencies-wrapper {
+  /* هذا هو اللون المتدرج الذي يعطي إحساس الصفحة الرئيسية */
+  background: #131110; /* لون احتياطي */
+  background: linear-gradient(180deg, rgba(31, 62, 114, 1) 0%, rgba(19, 17, 16, 1) 100%) !important;
+  
+  min-height: 100vh !important;
+  width: 100%;
+  padding-top: 120px;
+  color: white;
+}
+
+/* لجعل الصفحة تبدو كأنها قطعة واحدة من الرئيسية */
+.agencies-container {
+  background: transparent !important;
+}
+
+.agency-card {
+  /* بطاقات زجاجية تندمج مع الخلفية الزرقاء */
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 20px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.agency-card:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  transform: scale(1.03);
+}

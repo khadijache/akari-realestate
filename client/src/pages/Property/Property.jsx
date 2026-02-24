@@ -3,12 +3,12 @@ import { useMutation, useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import { getProperty, removeBooking } from "../../utils/api";
 import { PuffLoader } from "react-spinners";
-import { AiFillHeart } from "react-icons/ai";
+import { AiFillHeart, AiFillStar } from "react-icons/ai"; // أضفنا أيقونة النجمة
 import "./Property.css";
 
-import { FaShower } from "react-icons/fa";
+import { FaShower, FaFileContract } from "react-icons/fa"; // أضفنا أيقونة العقد
 import { AiTwotoneCar } from "react-icons/ai";
-import { MdLocationPin, MdMeetingRoom } from "react-icons/md";
+import { MdLocationPin, MdMeetingRoom, MdVerifiedUser } from "react-icons/md";
 import Map from "../../components/Map/Map";
 import useAuthCheck from "../../hooks/useAuthCheck";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -17,9 +17,13 @@ import UserDetailContext from "../../context/UserDetailContext.js";
 import { Button } from "@mantine/core";
 import { toast } from "react-toastify";
 import Heart from "../../components/Heart/Heart";
+import { useTranslation } from "react-i18next"; // مكتبة الترجمة
+
 const Property = () => {
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const id = pathname.split("/").slice(-1)[0];
+  
   const { data, isLoading, isError } = useQuery(["resd", id], () =>
     getProperty(id)
   );
@@ -40,16 +44,15 @@ const Property = () => {
         ...prev,
         bookings: prev.bookings.filter((booking) => booking?.id !== id),
       }));
-
-      toast.success("Booking cancelled", { position: "bottom-right" });
+      toast.success(t("booking_cancelled"), { position: "bottom-right" });
     },
   });
 
   if (isLoading) {
     return (
       <div className="wrapper">
-        <div className="flexCenter paddings">
-          <PuffLoader />
+        <div className="flexCenter paddings" style={{height: "60vh"}}>
+          <PuffLoader color="#e9ae5d" />
         </div>
       </div>
     );
@@ -59,7 +62,7 @@ const Property = () => {
     return (
       <div className="wrapper">
         <div className="flexCenter paddings">
-          <span>Error while fetching the property details</span>
+          <span>{t("error_fetching")}</span>
         </div>
       </div>
     );
@@ -68,90 +71,110 @@ const Property = () => {
   return (
     <div className="wrapper">
       <div className="flexColStart paddings innerWidth property-container">
-        {/* like button */}
+        
+        {/* زر الإعجاب */}
         <div className="like">
           <Heart id={id}/>
         </div>
 
-        {/* image */}
-        <img src={data?.image} alt="home image" />
+        {/* صورة العقار */}
+        <img src={data?.image} alt="home image" className="property-img" />
 
         <div className="flexCenter property-details">
-          {/* left */}
+          
+          {/* القسم الأيسر: التفاصيل */}
           <div className="flexColStart left">
-            {/* head */}
-            <div className="flexStart head">
-              <span className="primaryText">{data?.title}</span>
-              <span className="orangeText" style={{ fontSize: "1.5rem" }}>
-                $ {data?.price}
+            
+            {/* الرأس: العنوان، السعر، والتقييم */}
+            <div className="flexStart head" style={{width: "100%", justifyContent: "space-between"}}>
+              <div className="flexColStart">
+                <span className="primaryText">{data?.title}</span>
+                <div className="flexStart rating" style={{gap: "5px", color: "#ffd700"}}>
+                  <AiFillStar size={20} />
+                  <AiFillStar size={20} />
+                  <AiFillStar size={20} />
+                  <AiFillStar size={20} />
+                  <span className="secondaryText">(4.8 {t("reviews")})</span>
+                </div>
+              </div>
+              <span className="orangeText" style={{ fontSize: "1.8rem", fontWeight: "bold" }}>
+                {data?.price} DA
               </span>
             </div>
 
-            {/* facilities */}
+            {/* المرافق (Bathrooms, Parking, Rooms) */}
             <div className="flexStart facilities">
-              {/* bathrooms */}
               <div className="flexStart facility">
                 <FaShower size={20} color="#1F3E72" />
-                <span>{data?.facilities?.bathrooms} Bathrooms</span>
+                <span>{data?.facilities?.bathrooms} {t("bathrooms")}</span>
               </div>
-
-              {/* parkings */}
               <div className="flexStart facility">
                 <AiTwotoneCar size={20} color="#1F3E72" />
-                <span>{data?.facilities.parkings} Parking</span>
+                <span>{data?.facilities.parkings} {t("parking")}</span>
               </div>
-
-              {/* rooms */}
               <div className="flexStart facility">
                 <MdMeetingRoom size={20} color="#1F3E72" />
-                <span>{data?.facilities.bedrooms} Room/s</span>
+                <span>{data?.facilities.bedrooms} {t("rooms")}</span>
               </div>
             </div>
 
-            {/* description */}
-
-            <span className="secondaryText" style={{ textAlign: "justify" }}>
+            {/* الوصف */}
+            <span className="secondaryText" style={{ textAlign: "justify", marginTop: "1rem" }}>
               {data?.description}
             </span>
 
-            {/* address */}
+            {/* قسم الوضعية القانونية (جديد) */}
+            <div className="flexColStart legal-section" style={{marginTop: "2rem", width: "100%"}}>
+              <span className="primaryText" style={{fontSize: "1.3rem"}}>{t("legal_status")}</span>
+              <div className="flexStart" style={{gap: "1rem", marginTop: "10px"}}>
+                <div className="flexStart legal-badge">
+                   <MdVerifiedUser color="#28a745" />
+                   <span>{t("livret_foncier")}</span>
+                </div>
+                <div className="flexStart legal-badge">
+                   <FaFileContract color="#28a745" />
+                   <span>{t("acte_notarie")}</span>
+                </div>
+              </div>
+            </div>
 
-            <div className="flexStart" style={{ gap: "1rem" }}>
-              <MdLocationPin size={25} />
+            {/* الموقع الجغرافي */}
+            <div className="flexStart address-box" style={{ gap: "1rem", marginTop: "2rem" }}>
+              <MdLocationPin size={25} color="#e9ae5d" />
               <span className="secondaryText">
-                {data?.address}{" "}
-                {data?.city}{" "}
-                {data?.country}
+                {data?.address}, {data?.city}, {data?.country}
               </span>
             </div>
 
-            {/* booking button */}
-            {bookings?.map((booking) => booking.id).includes(id) ? (
-              <>
-                <Button
-                  variant="outline"
-                  w={"100%"}
-                  color="red"
-                  onClick={() => cancelBooking()}
-                  disabled={cancelling}
+            {/* أزرار الحجز */}
+            <div className="booking-actions" style={{width: "100%", marginTop: "2rem"}}>
+              {bookings?.map((booking) => booking.id).includes(id) ? (
+                <>
+                  <Button
+                    variant="outline"
+                    w={"100%"}
+                    color="red"
+                    onClick={() => cancelBooking()}
+                    disabled={cancelling}
+                  >
+                    <span>{t("cancel_booking")}</span>
+                  </Button>
+                  <span className="secondaryText" style={{marginTop: "10px", display: "block", textAlign: "center"}}>
+                    {t("booked_date")} {bookings?.filter((booking) => booking?.id === id)[0].date}
+                  </span>
+                </>
+              ) : (
+                <button
+                  className="button"
+                  style={{width: "100%"}}
+                  onClick={() => {
+                    validateLogin() && setModalOpened(true);
+                  }}
                 >
-                  <span>Cancel booking</span>
-                </Button>
-                <span>
-                  Your visit already booked for date{" "}
-                  {bookings?.filter((booking) => booking?.id === id)[0].date}
-                </span>
-              </>
-            ) : (
-              <button
-                className="button"
-                onClick={() => {
-                  validateLogin() && setModalOpened(true);
-                }}
-              >
-                Book your visit
-              </button>
-            )}
+                  {t("book_visit")}
+                </button>
+              )}
+            </div>
 
             <BookingModal
               opened={modalOpened}
@@ -161,7 +184,7 @@ const Property = () => {
             />
           </div>
 
-          {/* right side */}
+          {/* القسم الأيمن: الخريطة */}
           <div className="map">
             <Map
               address={data?.address}

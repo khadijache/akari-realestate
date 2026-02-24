@@ -1,100 +1,104 @@
-.hero-wrapper {
+ .hero-wrapper {
   color: white;
   position: relative;
-  z-index: 1;
-  padding-bottom: 2rem;
+  padding-bottom: 5rem;
+  background: #0a192f; /* لون خلفية داكن ليتناسب مع الهيدر */
 }
 
-
-.hero-container {
-  justify-content: space-around;
-  align-items: flex-end; 
-}
-
-
-/* left side */
-.hero-left {
-  gap: 3rem;
-}
-.hero-title {
-  position: relative;
+.hero-contents {
+  gap: 2rem;
   z-index: 1;
 }
-.hero-title > h1 {
-  font-weight: 600;
-  font-size: 3.8rem;
+
+.hero-main-title {
+  font-size: 3.5rem;
+  font-weight: 800;
   line-height: 4rem;
+  text-align: center;
+  margin-top: 4rem;
 }
-.orange-circle {
-  height: 4rem;
-  width: 4rem;
-  background: var(--orange-gradient);
-  border-radius: 999px;
-  position: absolute;
-  right: 28%;
-  top: -10%;
-  z-index: -1;
-}
-.search-bar {
-  background-color: white;
+
+/* زر View Listings */
+.view-listings-btn {
+  background: #e9ae5d;
+  color: #0a192f;
+  padding: 12px 30px;
+  border: none;
   border-radius: 5px;
-  border: 3px solid rgba(120, 120, 120, 0.374);
-  padding: 0.5rem 1rem;
-  width: 100%;
-  justify-content: space-between;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
 }
-.search-bar > input {
+
+.view-listings-btn:hover {
+  transform: scale(1.05);
+  background: #f1c27d;
+}
+
+/* شريط البحث المتقدم */
+.search-bar-advanced {
+  background: white;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  width: 100%;
+  max-width: 950px;
+  margin-top: 2rem;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  color: black;
+}
+
+.search-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 15px;
+}
+
+.search-item label {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #888;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.search-item input, .search-item select {
   border: none;
   outline: none;
-}
-.stats{
-    width: 100%;
-    justify-content: space-between;
-}
-.stat>:nth-child(1)
-{
-    font-size: 2rem;
-}
-.stat>:nth-child(1)>:last-child{
-    color: orange;
-}
-/* right side */
-
-.image-container {
-  width: 30rem;
-  height: 35rem;
-  overflow: hidden;
-  border-radius: 15rem 15rem 0 0;
-  border: 8px solid rgba(255, 255, 255, 0.12);
-}
-.image-container>img{
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
 }
 
-/* mobile screens */
-@media  (max-width: 640px){
-  .hero-container{
-    margin-top: 2rem;
-  }
-  .hero-title>h1{
-    font-size: 2.5rem;
-    line-height: 3rem;
-  }
-  .image-container{
-    width: 95%;
-    height: 25rem;
-  }
-  .stats{
-    justify-content: center;
+.divider {
+  width: 1px;
+  height: 45px;
+  background: #eee;
+}
+
+.search-icon-btn {
+  background: #e9ae5d;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* التوافق مع الشاشات الصغيرة */
+@media (max-width: 768px) {
+  .search-bar-advanced {
+    flex-direction: column;
     gap: 1.5rem;
-    font-weight: wrap;
   }
-  .stat>:nth-child(1){
-    font-size: 1.5rem;
+  .divider {
+    display: none;
   }
-  .stat>:nth-child(2)
-  {
-    font-size: 0.8rem;
+  .hero-main-title {
+    font-size: 2.5rem;
   }
 }

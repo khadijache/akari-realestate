@@ -1,12 +1,11 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Box, Button, Group, NumberInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import React, { useContext } from "react";
-import UserDetailContext from "../../context/UserDetailContext";
-import useProperties from "../../hooks/useProperties.jsx";
-import { useMutation } from "react-query";
+import React from "react";
+import { db } from "../../firebase"; // تأكد من استيراد قاعدة البيانات
+import { ref, push, set } from "firebase/database";
 import { toast } from "react-toastify";
-import { createResidency } from "../../utils/api";
+
 const Facilities = ({
   prevStep,
   propertyDetails,
@@ -14,6 +13,7 @@ const Facilities = ({
   setOpened,
   setActiveStep,
 }) => {
+  // 1. إعداد النموذج (Form) كما كان في الأصل لكن مع تعريب التنبيهات
   const form = useForm({
     initialValues: {
       bedrooms: propertyDetails.facilities.bedrooms,
@@ -21,63 +21,54 @@ const Facilities = ({
       bathrooms: propertyDetails.facilities.bathrooms,
     },
     validate: {
-      bedrooms: (value) => (value < 1 ? "Must have atleast one room" : null),
-      bathrooms: (value) =>
-        value < 1 ? "Must have atleast one bathroom" : null,
+      bedrooms: (value) => (value < 1 ? "يجب إدخال غرفة واحدة على الأقل" : null),
+      bathrooms: (value) => (value < 1 ? "يجب إدخال حمام واحد على الأقل" : null),
     },
   });
 
   const { bedrooms, parkings, bathrooms } = form.values;
+  const { user } = useAuth0();
 
-  const handleSubmit = () => {
+  // 2. دالة الإرسال إلى Firebase
+  const handleSubmit = async () => {
     const { hasErrors } = form.validate();
     if (!hasErrors) {
-      setPropertyDetails((prev) => ({
-        ...prev,
-        facilities: { bedrooms, parkings, bathrooms },
-      }));
-      mutate();
+      try {
+        const propertiesRef = ref(db, "listings");
+        const newPropertyRef = push(propertiesRef);
+
+        await set(newPropertyRef, {
+          ...propertyDetails,
+          facilities: { bedrooms, parkings, bathrooms },
+          userEmail: user?.email || "غير مسجل",
+          addedAt: new Date().toISOString(),
+        });
+
+        toast.success("تمت إضافة العقار بنجاح!", { position: "bottom-right" });
+
+        // تصفير البيانات وإغلاق النافذة
+        setPropertyDetails({
+          title: "",
+          description: "",
+          price: 0,
+          country: "",
+          city: "",
+          address: "",
+          image: null,
+          facilities: { bedrooms: 0, parkings: 0, bathrooms: 0 },
+        });
+        setOpened(false);
+        setActiveStep(0);
+
+      } catch (error) {
+        console.error(error);
+        toast.error("حدث خطأ أثناء الإضافة", { position: "bottom-right" });
+      }
     }
   };
 
-  // ==================== upload logic
-  const { user } = useAuth0();
-  const {
-    userDetails: { token },
-  } = useContext(UserDetailContext);
-  const { refetch: refetchProperties } = useProperties();
-
-  const {mutate, isLoading} = useMutation({
-    mutationFn: ()=> createResidency({
-        ...propertyDetails, facilities: {bedrooms, parkings , bathrooms},
-    }, token),
-    onError: ({ response }) => toast.error(response.data.message, {position: "bottom-right"}),
-    onSettled: ()=> {
-      toast.success("Added Successfully", {position: "bottom-right"});
-      setPropertyDetails({
-        title: "",
-        description: "",
-        price: 0,
-        country: "",
-        city: "",
-        address: "",
-        image: null,
-        facilities: {
-          bedrooms: 0,
-          parkings: 0,
-          bathrooms: 0,
-        },
-        userEmail: user?.email,
-      })
-      setOpened(false)
-      setActiveStep(0)
-      refetchProperties()
-    }
-
-  })
-
   return (
-    <Box maw="30%" mx="auto" my="sm">
+    <Box maw="30%" mx="auto" my="sm" dir="rtl">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -86,27 +77,27 @@ const Facilities = ({
       >
         <NumberInput
           withAsterisk
-          label="No of Bedrooms"
+          label="عدد الغرف"
           min={0}
           {...form.getInputProps("bedrooms")}
         />
         <NumberInput
-          label="No of Parkings"
+          label="مواقف السيارات"
           min={0}
           {...form.getInputProps("parkings")}
         />
         <NumberInput
           withAsterisk
-          label="No of Bathrooms"
+          label="عدد الحمامات"
           min={0}
           {...form.getInputProps("bathrooms")}
         />
         <Group position="center" mt="xl">
           <Button variant="default" onClick={prevStep}>
-            Back
+            السابق
           </Button>
-          <Button type="submit" color="green" disabled={isLoading}>
-            {isLoading ? "Submitting" : "Add Property"}
+          <Button type="submit" color="green">
+            نشر العقار الآن
           </Button>
         </Group>
       </form>

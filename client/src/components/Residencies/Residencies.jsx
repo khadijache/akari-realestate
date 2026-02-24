@@ -15,7 +15,7 @@ const Residencies = () => {
   if(isError){
     return(
       <div className='wrapper'>
-        <span>Error while fetching data</span>
+        <span> حدث خطأ أثناء جلب البيانات</span>
       </div>
     )
   }
@@ -39,8 +39,8 @@ const Residencies = () => {
     <div id="residencies" className="r-wrapper">
       <div className="paddings innerWidth r-container">
         <div className="flexColStart r-head">
-          <span className="orangeText">Best Choices</span>
-          <span className="primaryText">Popular Residencies</span>
+          <span className="orangeText"> أفضل الاختيارات </span>
+          <span className="primaryText">عقارات رائجة </span>
         </div>
         <Swiper {...sliderSettings}>
           <SlideNextButton />

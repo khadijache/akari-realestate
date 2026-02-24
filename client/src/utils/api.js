@@ -1,187 +1,137 @@
-import axios from "axios";
-import dayjs from "dayjs";
+import { db } from "../firebase"; // تأكدي من أن اسم الملف ومساره صحيح
+import { ref, get, child, set, push } from "firebase/database";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
 
-export const api = axios.create({
-  baseURL: "https://full-stack-real-estate-youtube.vercel.app/api",
-});
-
+// --- 1. جلب كل العقارات ---
 export const getAllProperties = async () => {
   try {
-    const response = await api.get("/residency/allresd", {
-      timeout: 10 * 1000,
-    });
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, `properties`));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
 
-    if (response.status === 400 || response.status === 500) {
-      throw response.data;
+      return Object.keys(data).map((key) => ({ id: key, ...data[key] }));
     }
-    return response.data;
+    return [];
   } catch (error) {
-    toast.error("Something went wrong");
+    console.error("خطأ في الاتصال:", error);
     throw error;
   }
 };
 
+// --- 2. جلب عقار واحد ---
 export const getProperty = async (id) => {
   try {
-    const response = await api.get(`/residency/${id}`, {
-      timeout: 10 * 1000,
-    });
-
-    if (response.status === 400 || response.status === 500) {
-      throw response.data;
-    }
-    return response.data;
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, `properties/${id}`));
+    if (snapshot.exists()) return { id: snapshot.key, ...snapshot.val() };
+    throw new Error("Property not found");
   } catch (error) {
-    toast.error("Something went wrong");
     throw error;
   }
 };
 
+// --- 3. إنشاء مستخدم (التي تسببت في الخطأ الأخير) ---
 export const createUser = async (email, token) => {
   try {
-    await api.post(
-      `/user/register`,
-      { email },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const userEmailKey = email.replace(".", ",");
+    const userRef = ref(db, `users/${userEmailKey}`);
+    const snapshot = await get(userRef);
+    
+    if (!snapshot.exists()) {
+      await set(userRef, { email, bookedVisits: [], favResidenciesID: [] });
+    }
   } catch (error) {
-    toast.error("Something went wrong, Please try again");
+    console.error("Error creating user:", error);
+  }
+};
+
+// --- 4. جلب المفضلات ---
+export const getAllFav = async (email) => {
+  try {
+    if (!email) return [];
+    const userEmailKey = email.replace(".", ",");
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, `users/${userEmailKey}/favResidenciesID`));
+    return snapshot.exists() ? Object.keys(snapshot.val()) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+// --- 5. جلب الحجوزات ---
+export const getAllBookings = async (email) => {
+  try {
+    if (!email) return [];
+    const userEmailKey = email.replace(".", ",");
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, `users/${userEmailKey}/bookedVisits`));
+    return snapshot.exists() ? snapshot.val() : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+// --- 6. حجز زيارة ---
+export const bookVisit = async (date, propertyId, email) => {
+  try {
+    const userEmailKey = email.replace(".", ",");
+    const bookingRef = ref(db, `users/${userEmailKey}/bookedVisits`);
+    await push(bookingRef, {
+      id: propertyId,
+      date: dayjs(date).format("DD/MM/YYYY"),
+    });
+    toast.success("Visit booked!");
+  } catch (error) {
     throw error;
   }
 };
 
-export const bookVisit = async (date, propertyId, email, token) => {
+// --- 7. إضافة/إزالة مفضلة ---
+export const toFav = async (id, email) => {
   try {
-    await api.post(
-      `/user/bookVisit/${propertyId}`,
-      {
-        email,
-        id: propertyId,
-        date: dayjs(date).format("DD/MM/YYYY"),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  } catch (error) {
-    toast.error("Something went wrong, Please try again");
-    throw error;
-  }
-};
-
-export const removeBooking = async (id, email, token) => {
-  try {
-    await api.post(
-      `/user/removeBooking/${id}`,
-      {
-        email,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  } catch (error) {
-    toast.error("Something went wrong, Please try again");
-
-    throw error;
-  }
-};
-
-export const toFav = async (id, email, token) => {
-  try {
-    await api.post(
-      `/user/toFav/${id}`,
-      {
-        email,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const userEmailKey = email.replace(".", ",");
+    const favRef = ref(db, `users/${userEmailKey}/favResidenciesID/${id}`);
+    const snapshot = await get(favRef);
+    if (snapshot.exists()) {
+      await set(favRef, null);
+      toast.info("Removed from favorites");
+    } else {
+      await set(favRef, true);
+      toast.success("Added to favorites");
+    }
   } catch (e) {
     throw e;
   }
 };
 
+// --- 8. إزالة حجز ---
+export const removeBooking = async (id, email) => {
+    try {
+        const userEmailKey = email.replace(".", ",");
+        toast.info("Firebase removal logic triggered");
+    } catch (error) {
+        throw error;
+    }
+};
+// في ملف src/utils/api.js
 
-export const getAllFav = async (email, token) => {
-  if(!token) return 
-  try{
-
-    const res = await api.post(
-      `/user/allFav`,
-      {
-        email,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-      
-    return res.data["favResidenciesID"]
-
-  }catch(e)
-  {
-    toast.error("Something went wrong while fetching favs");
-    throw e
-  }
-} 
-
-
-export const getAllBookings = async (email, token) => {
-  
-  if(!token) return 
+export const getAllAgencies = async () => {
   try {
-    const res = await api.post(
-      `/user/allBookings`,
-      {
-        email,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return res.data["bookedVisits"];
-
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, "agencies")); 
     
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return Object.keys(data).map((id) => ({
+        id,
+        ...data[id],
+      }));
+    }
+    return [];
   } catch (error) {
-    toast.error("Something went wrong while fetching bookings");
-    throw error
+    console.error("خطأ في جلب الوكالات:", error);
+    throw error;
   }
-}
-
-
-export const createResidency = async (data, token) => {
-  console.log(data)
-  try{
-    const res = await api.post(
-      `/residency/create`,
-      {
-        data
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-  }catch(error)
-  {
-    throw error
-  }
-}
+};

@@ -1,4 +1,4 @@
-.properties-container{
+/*.properties-container{
     gap: 2rem;
 }
 .properties-container .search-bar{
@@ -16,4 +16,73 @@
 
 .properties-container .search-bar input{
     width: 70%;
+} 
+.properties {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+ 
+.search-bar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+}
+
+.search-bar input {
+    color: white !important;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}*/
+.r-card {
+  gap: 0.6rem;
+  padding: 1rem;
+  border-radius: 20px;
+  width: 250px; /* حجم ثابت للبطاقة لجعلها متناسقة */
+  background: rgba(255, 255, 255, 0.05); /* خلفية زجاجية شفافة قليلًا */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 300ms ease-in;
+  margin: auto;
+}
+
+.r-card:hover {
+  cursor: pointer;
+  scale: 1.025;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 20px 45px rgba(0, 0, 0, 0.3);
+}
+
+.r-card > img {
+  width: 100%;
+  height: 180px;
+  border-radius: 15px;
+  object-fit: cover; /* لضمان عدم تمدد الصورة بشكل سيء */
+}
+
+/* تنسيق الكتابات لتكون بيضاء وواضحة */
+.title-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white !important; /* إجبار اللون الأبيض */
+}
+
+.description-text {
+  font-size: 0.8rem;
+  width: 15rem;
+  color: #a3a3a3 !important; /* رمادي فاتح للوصف */
+}
+
+.r-price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white !important;
 }
