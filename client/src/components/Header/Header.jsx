@@ -1,55 +1,47 @@
 import React, { useState } from "react";
 import "./Header.css";
 import { BiMenuAltRight } from "react-icons/bi";
-import { MdLanguage } from "react-icons/md";
-import { Link, NavLink } from "react-router-dom";
 import OutsideClickHandler from "react-outside-click-handler";
-import { useTranslation } from "react-i18next";
+import { Link, NavLink } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
 
-  const toggleLanguage = () => {
-    const nextLang = i18n.language === "ar" ? "en" : "ar";
-    i18n.changeLanguage(nextLang);
-    document.body.dir = nextLang === "ar" ? "rtl" : "ltr";
+  const getMenuStyles = (menuOpened) => {
+    if (document.documentElement.clientWidth <= 800) {
+      return { right: !menuOpened && "-100%" };
+    }
   };
 
   return (
-    <section className="h-wrapper custom-header">
-      <div className="flexCenter innerWidth paddings h-container">
-        
-        {/* اللوجو - تأكدي من ظهور هذا القسم */}
-        <Link to="/" className="logo-adar">
-          <img src="./logo2.png" alt="ADAR Logo" width={50} />
-          <span className="brand-name">ADAR</span>
+    <section className="h-wrapper">
+      <div className="flexCenter paddings innerWidth h-container">
+        {/* اللوجو */}
+        <Link to="/">
+          <img src="./logo2.png" alt="لوجو عقاري الجلفة" width={100} />
         </Link>
 
-        {/* القائمة */}
         <OutsideClickHandler onOutsideClick={() => setMenuOpened(false)}>
-          <div 
-            className="flexCenter h-menu" 
-            style={{ right: menuOpened ? "2rem" : "-100%" }}
-          >
-            {/* زر الترجمة */}
-            <div className="language-selector" onClick={toggleLanguage}>
-              <MdLanguage size={22} color="#e9ae5d" />
-              <span>{i18n.language === "ar" ? "English" : "عربي"}</span>
-            </div>
+          <div className="flexCenter h-menu" style={getMenuStyles(menuOpened)}>
+            <NavLink to="/properties">العقارات</NavLink>
+            <NavLink to="/agencies">الوكالات العقارية</NavLink>
+            <NavLink to="/notaries">الموثقون</NavLink>
+            <a href="mailto:contact@akari-djelfa.com">اتصل بنا</a>
 
-            <NavLink to="/">{t("home")}</NavLink>
-            <NavLink to="/properties">{t("properties")}</NavLink>
-            <NavLink to="/agencies">{t("agencies")}</NavLink>
-            <a href="mailto:test@test.com">{t("contact")}</a>
-
-            <button className="button login-btn">
-              {t("login")}
-            </button>
+            {/* نظام الدخول */}
+            {!isAuthenticated ? (
+              <button className="button" onClick={loginWithRedirect}>
+                تسجيل الدخول
+              </button>
+            ) : (
+              <ProfileMenu user={user} logout={logout} />
+            )}
           </div>
         </OutsideClickHandler>
 
-        {/* أيقونة الموبايل */}
         <div className="menu-icon" onClick={() => setMenuOpened((prev) => !prev)}>
           <BiMenuAltRight size={30} />
         </div>
