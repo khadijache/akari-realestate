@@ -52,7 +52,8 @@ i18n
          "agencies_title": "Certified Real Estate Agencies",
          "contact_now": "Contact Now",
          "loading_agencies": "Loading agencies, please wait...",
-         "agencies_subtitle": "Connect with the best agents in the region"
+         "agencies_subtitle": "Connect with the best agents in the region",
+         "add-property": "Add-property"
 
            
         }
@@ -100,7 +101,8 @@ i18n
          "loading_agencies": "جاري تحميل الوكالات من قاعدة البيانات...",
          "agencies_title": "الوكالات العقارية المعتمدة",
          "contact_now": "اتصل الآن",
-         "loading_agencies": "جاري تحميل الوكالات..."
+         "loading_agencies": "جاري تحميل الوكالات...",
+         "add-property":" اضافة اعلان"
            
         }
       }

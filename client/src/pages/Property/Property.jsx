@@ -78,7 +78,29 @@ const Property = () => {
         </div>
 
         {/* صورة العقار */}
-        <img src={data?.image} alt="home image" className="property-img" />
+     {/* صورة العقار المصححة */}
+<img 
+  /* استخدمنا data?.image لأن البيانات في هذه الصفحة مخزنة في متغير data */
+  src={`/images/${data?.image?.trim()}`} 
+  alt={data?.title} 
+  className="property-image" /* أضفنا كلاس للتحكم في الحجم من CSS */
+  style={{ 
+    width: "100%", 
+    height: "400px", /* زيادة الطول لأننا في الصفحة الكاملة */
+    objectFit: "cover", 
+    borderRadius: "20px",
+    marginTop: "1rem" 
+  }}
+  onError={(e) => {
+    console.log("محاولة المسار البديل لـ:", data?.image);
+    if (!e.target.dataset.tried) {
+      e.target.dataset.tried = "true";
+      e.target.src = `/${data?.image?.trim()}`;
+    } else {
+      e.target.src = "https://via.placeholder.com/800x400?text=Image+Not+Found";
+    }
+  }}
+/>
 
         <div className="flexCenter property-details">
           

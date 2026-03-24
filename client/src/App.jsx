@@ -18,6 +18,7 @@ import Bookings from "./pages/Bookings/Bookings";
 import Favourites from "./pages/Favourites/Favourites";
 // استيراد المكون الخاص بالتنسيق إذا كنتِ تستخدمين Mantine
 import { MantineProvider } from '@mantine/core';
+import AddProperty from "./pages/AddProperty/AddProperty";
 
 function App() {
   const queryClient = new QueryClient();
@@ -44,9 +45,11 @@ function App() {
                       <Route index element={<Properties />} />
                       <Route path=":propertyId" element={<Property />} />
                     </Route>
+                    <Route path="/add-property" element={<AddProperty />} />
                     <Route path="/agencies" element={<Agencies />} /> 
                     <Route path="/bookings" element={<Bookings />} />
                     <Route path="/favourites" element={<Favourites />} />
+                    <Route path="/add-property" element={<AddProperty />} />
                   </Route>
                   {/* مسار تسجيل الدخول في مكانه الصحيح */}
                   <Route path="/login" element={<Login />} />
