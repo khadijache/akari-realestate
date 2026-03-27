@@ -1,47 +1,38 @@
 import React, { useState } from "react";
 import "./Header.css";
 import { BiMenuAltRight } from "react-icons/bi";
+import { NavLink, Link } from "react-router-dom";
 import OutsideClickHandler from "react-outside-click-handler";
-import { Link, NavLink } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
-  const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
 
   const getMenuStyles = (menuOpened) => {
     if (document.documentElement.clientWidth <= 800) {
-      return { right: !menuOpened && "-100%" };
+      return { left: !menuOpened && "-100%" }; // تغيير من right لـ left بسبب الـ RTL
     }
   };
 
   return (
     <section className="h-wrapper">
-      <div className="flexCenter paddings innerWidth h-container">
-        {/* اللوجو */}
+      <div className="flexCenter paddings innerWidth h-container" style={{direction: "rtl"}}>
+        
+        {/* اللوجو (على اليمين) */}
         <Link to="/">
-          <img src="./logo2.png" alt="لوجو عقاري الجلفة" width={100} />
+          <img src="./logo2.png" alt="لوجو عقاري" width={100} />
         </Link>
 
+        {/* القائمة (تظهر بجانب اللوجو أو على اليسار) */}
         <OutsideClickHandler onOutsideClick={() => setMenuOpened(false)}>
           <div className="flexCenter h-menu" style={getMenuStyles(menuOpened)}>
             <NavLink to="/properties">العقارات</NavLink>
-            <NavLink to="/agencies">الوكالات العقارية</NavLink>
+            <NavLink to="/agencies">الوكالات</NavLink>
             <NavLink to="/notaries">الموثقون</NavLink>
-            <a href="mailto:contact@akari-djelfa.com">اتصل بنا</a>
-
-            {/* نظام الدخول */}
-            {!isAuthenticated ? (
-              <button className="button" onClick={loginWithRedirect}>
-                تسجيل الدخول
-              </button>
-            ) : (
-              <ProfileMenu user={user} logout={logout} />
-            )}
+            <NavLink to="/login" className="button">سجل الان</NavLink>
           </div>
         </OutsideClickHandler>
 
+        {/* أيقونة الموبايل */}
         <div className="menu-icon" onClick={() => setMenuOpened((prev) => !prev)}>
           <BiMenuAltRight size={30} />
         </div>

@@ -15,6 +15,7 @@
     "@mantine/dates": "^6.0.16",
     "@mantine/form": "^6.0.16",
     "@mantine/hooks": "^6.0.16",
+    "@tailwindcss/postcss": "^4.2.2",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "esri-leaflet-geocoder": "2.3.3",
@@ -45,6 +46,9 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
     "vite": "^4.2.0"
   }
 }

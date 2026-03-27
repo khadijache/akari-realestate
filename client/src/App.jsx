@@ -1,7 +1,7 @@
 import { db } from './firebase';
 console.log("قاعدة البيانات متصلة:", db);
 import { Suspense, useState } from "react";
-import Login from "./pages/Login";
+import Login from "./pages/Login/Login";
 import "./App.css";
 import Layout from "./components/Layout/Layout";
 import Website from "./pages/Website";
@@ -19,6 +19,8 @@ import Favourites from "./pages/Favourites/Favourites";
 // استيراد المكون الخاص بالتنسيق إذا كنتِ تستخدمين Mantine
 import { MantineProvider } from '@mantine/core';
 import AddProperty from "./pages/AddProperty/AddProperty";
+import Notaries from "./pages/Notaries/Notaries";
+import Register from "./pages/Register/Register";    
 
 function App() {
   const queryClient = new QueryClient();
@@ -48,11 +50,14 @@ function App() {
                     <Route path="/add-property" element={<AddProperty />} />
                     <Route path="/agencies" element={<Agencies />} /> 
                     <Route path="/bookings" element={<Bookings />} />
+                    <Route path="/notaries" element={<Notaries />} />
                     <Route path="/favourites" element={<Favourites />} />
                     <Route path="/add-property" element={<AddProperty />} />
+                    <Route path="/register" element={<Register />} />
                   </Route>
                   {/* مسار تسجيل الدخول في مكانه الصحيح */}
                   <Route path="/login" element={<Login />} />
+                   
                 </Routes>
               </Suspense>
             </div>

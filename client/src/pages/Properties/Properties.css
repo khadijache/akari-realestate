@@ -86,3 +86,20 @@
   font-weight: 600;
   color: white !important;
 }
+.properties-container {
+  /* هذه المساحة تمنع التداخل مع الهيدر الثابت */
+  padding-top: 120px !important; 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.properties {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
