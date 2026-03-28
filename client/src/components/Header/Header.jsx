@@ -15,11 +15,13 @@ const Header = () => {
 
   return (
     <section className="h-wrapper">
-      <div className="flexCenter paddings innerWidth h-container" style={{direction: "rtl"}}>
+      <div className="flexCenter paddings innerWidth h-container sticky top-0 z-50 bg-white border-b border-gray-100" 
+  style={{ direction: "rtl" }}>
         
         {/* اللوجو (على اليمين) */}
         <Link to="/">
-          <img src="./logo2.png" alt="لوجو عقاري" width={100} />
+        <div className="logo-circle"> 
+          <img src="./logo2.png" alt="لوجو عقاري" width={100} /></div>
         </Link>
 
         {/* القائمة (تظهر بجانب اللوجو أو على اليسار) */}

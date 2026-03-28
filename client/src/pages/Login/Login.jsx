@@ -16,7 +16,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("تم تسجيل الدخول بنجاح:", result.user.displayName);
-      navigate("/"); // الانتقال لصفحة عقارات الجلفة الرئيسية بعد النجاح
+      navigate("/dashboard"); // الانتقال لصفحة عقارات الجلفة الرئيسية بعد النجاح
     } catch (error) {
       console.error("خطأ في تسجيل الدخول بجوجل:", error.message);
       alert("حدث خطأ أثناء الاتصال بجوجل");

@@ -15,13 +15,14 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// أضيفي هذا السطر إذا كان ناقصاً
-export const storage = getStorage(app);
 
-// التصدير الذي يعيد الحياة لصفحاتك القديمة:
-export const db = getDatabase(app);      // هذا سيعيد الوكالات والعقارات للعمل فوراً
-export const auth = getAuth(app);
+ 
 
-// التصدير الخاص بصفحة "إضافة إعلان" الجديدة (بأسماء مختلفة لتجنب التضارب):
+// 1. هذا لصفحة الداشبورد (Firestore) - سيبقى كما هو ليعمل الداشبورد
 export const firestoreDB = getFirestore(app); 
-export const imageStorage = getStorage(app);
+
+// 2. هذا للصفحات القديمة (Realtime Database) - أعيدي تسميته لـ db
+export const db = getDatabase(app); 
+
+export const auth = getAuth(app);
+export const storage = getStorage(app);

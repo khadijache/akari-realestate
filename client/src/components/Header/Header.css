@@ -1,116 +1,116 @@
 .h-wrapper {
-  position: fixed; /* يثبت في الأعلى في كل الصفحات */
+  /* التعديل الجوهري: sticky بدلاً من fixed لعدم تغطية المحتوى */
+  position: sticky; 
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
-  /* إضافة لون خلفية لضمان ظهوره في الصفحات البيضاء */
-  background: rgba(18, 30, 62, 0.95); /* أزرق داكن جداً شفاف قليلاً */
-  backdrop-filter: blur(10px); /* تأثير ضبابي */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  /* اللون الأزرق الداكن الجميل الذي اخترتِه */
+  background: rgba(18, 30, 62, 0.95); 
+  backdrop-filter: blur(10px); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .h-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 10px 2rem; /* أضفنا مسافة جانبية */
 }
 
-.h-menu {
-  gap: 2rem;
+/* جعل اللوجو دائرياً */
+.logo-circle {
+  width: 45px;
+  height: 45px;
+  background: white; /* أو var(--orange) حسب رغبتك */
+  border-radius: 50%; /* هذا ما يجعله دائرياً تماماً */
   display: flex;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid var(--orange);
 }
 
+/* 1. تكبير حاوية اللوجو الدائرية */
+.logo-circle {
+  width: 60px;  /* زِدنا الحجم من 45 إلى 60 */
+  height: 60px;
+  background: white; 
+  border-radius: 50%; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid var(--orange); /* خط أسمك قليلاً */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* ظل خفيف ليبرز اللوجو */
+}
+
+.logo-circle img {
+  width: 85%; /* تكبير الصورة داخل الدائرة لملء الفراغ */
+  height: auto;
+  object-fit: contain;
+}
+
+/* 2. تحسين وضوح العناوين (Menu) */
 .h-menu a {
-  color: white !important; /* ضمان أن النص أبيض دائماً */
+  /* تغيير اللون ليكون واضحاً جداً (أبيض ناصع) */
+  color: #ffffff !important; 
   text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 700; /* جعل الخط عريضاً (Bold) ليكون مقروءاً */
+  font-size: 1.1rem; /* تكبير الخط قليلاً */
+  transition: 0.3s;
+  /* إضافة ظل خفيف جداً للنص لزيادة التباين */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
 }
 
-.h-menu a:hover, .h-menu .active {
+.h-menu a:hover {
   color: var(--orange) !important;
+  text-shadow: none; /* إزالة الظل عند التحويم */
 }
 
-.logo-text {
-  font-weight: bold;
-  font-size: 1.6rem;
-  color: white;
-  text-decoration: none;
-}
-
-.logo-text span {
-  color: var(--orange);
-}
-
-/* زر الدخول */
-.h-menu .button {
-    padding: 8px 20px;
-    font-size: 0.9rem;
-}
+/* 3. تعديل الخلفية لتكون داكنة أكثر قليلاً لزيادة الوضوح */
 .h-wrapper {
-  position: fixed; /* يبقى ثابتاً في الأعلى */
+  position: sticky; 
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999; /* رقم كبير جداً لضمان عدم اختفائه خلف الصورة */
-  background: rgba(18, 30, 62, 0.9); /* أزرق داكن شفاف ليناسب كل الصفحات */
-  backdrop-filter: blur(8px); /* تأثير زجاجي */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 9999;
+  /* جعل اللون الأزرق الداكن أكثر كثافة (0.98 بدلاً من 0.9) */
+  background: rgba(18, 30, 62, 0.98); 
+  backdrop-filter: blur(12px); 
+  padding: 5px 0; /* تقليل الحشو الرأسي ليظهر الهيدر بشكل أنيق */
 }
 
-.h-container {
-  display: flex;
-  justify-content: space-between; /* اللوجو جهة والمنيو جهة */
-  align-items: center;
-  padding: 10px 0;
-}
-
-/* تنسيق اللوجو */
 .logo {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .logo span {
   color: white;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: 1px;
 }
 
 .logo .city-name {
-  color: var(--orange); /* اللون البرتقالي الموجود في مشروعك */
+  color: var(--orange);
 }
 
-/* تنسيق الروابط */
 .h-menu {
   gap: 2rem;
+  display: flex;
+  align-items: center;
 }
 
 .h-menu a {
   color: #f1f1f1 !important;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 
 .h-menu a:hover {
   color: var(--orange) !important;
-}
-
-/* زر تسجيل الدخول */
-.h-menu .button {
-    background: var(--blue-gradient);
-    border: none;
-    padding: 8px 18px;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
+  transform: translateY(-2px); /* حركة خفيفة عند الحوم */
 }
