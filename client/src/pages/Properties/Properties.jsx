@@ -1,99 +1,111 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // أضفنا هذا لتفعيل الضغط على البطاقة
 import SearchBar from "../../components/SearchBar/SearchBar";
 import useProperties from "../../hooks/useProperties";
 import { PuffLoader } from "react-spinners";
+import { MdLocationPin } from "react-icons/md"; // أضفنا أيقونة الموقع
+import { useNavigate } from "react-router-dom"; // لتفعيل الضغط
 import "./Properties.css";
 
 const Properties = () => {
   const { data, isError, isLoading } = useProperties();
-  const navigate = useNavigate(); // لتفعيل التنقل عند الضغط
-  
+  const navigate = useNavigate();
+
+  // 1. حالة الفلتر الجديدة
   const [filter, setFilter] = useState({
     city: "",
     area: "",
     type: "",
-    price: ""
+    // price: "" // قمنا بتجميد حقل السعر (محذوف من البحث)
   });
 
-  // 1. حماية: دالة ذكية للتعامل مع الصور (Firebase vs Local)
-  // هذه الدالة ستحل مشكلة أخطاء 404 في الـ Console
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return "https://via.placeholder.com/400x300?text=Akari+Real+Estate";
-    
-    // إذا كان الرابط يبدأ بـ http (رابط إنترنت أو فايربيس) استخدمه مباشرة
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    // إذا كان مجرد اسم ملف (مثل pic.jpg)، نضع صورة افتراضية محترفة بدلاً من الخطأ
-    return "https://via.placeholder.com/400x300?text=Image+Not+Found";
+  // قائمة المدن المسموحة فقط
+  const allowedCities = ["Djelfa", "Hassi Bahbah", "Ain Maabed", "Charef"];
+  // قائمة الأحياء الخاصة بالجلفة فقط
+  const djelfaAreas = ["100 Logements", "Chaba", "Cite Moustakbel", "Hasi Bahbah Center"];
+
+  // 2. دالة حماية الصور الذكية لضمان ظهور صور الفايربيس (الحل لمشكلتك)
+  const getSafeImage = (img) => {
+    if (!img) return "https://via.placeholder.com/400x300?text=ADAR+Real+Estate";
+    if (img.startsWith('http')) return img; // إذا كان رابط Firebase
+    return `/images/${img.trim()}`; // إذا كان مساراً محلياً
   };
 
-  // منطق الفلترة المحدث
+  // 3. منطق الفلترة المحدث والدقيق
   const filteredProperties = data?.filter((property) => {
-    const matchCity = !filter.city || 
-      property.city?.toLowerCase() === filter.city.toLowerCase();
+    // فلتر المدينة: حصر في الـallowedCities فقط
+    const cityMatch = !filter.city || property.city?.toLowerCase() === filter.city.toLowerCase();
 
-    const matchArea = !filter.area || 
-      property.address?.toLowerCase().includes(filter.area.toLowerCase());
+    // فلتر الحي: لا يسمح إلا إذا كانت المدينة الجلفة
+    const isDjelfaSelected = filter.city?.toLowerCase() === "djelfa";
+    const areaMatch = isDjelfaSelected 
+      ? (!filter.area || property.area?.toLowerCase() === filter.area.toLowerCase())
+      : true; // إذا لم تكن المدينة الجلفة، لا نطبق فلتر الحي
 
-    const matchType = !filter.type || 
-      property.type?.toLowerCase() === filter.type.toLowerCase();
+    // فلتر النوع (شقة، فيلا، محل...)
+    const typeMatch = !filter.type || property.type?.toLowerCase() === filter.type.toLowerCase();
 
-    const matchPrice = !filter.price || 
-      (Number(property.price) <= Number(filter.price));
-
-    return matchCity && matchArea && matchType && matchPrice;
+    return cityMatch && areaMatch && typeMatch;
   });
 
-  if (isError) return <div className="wrapper flexCenter"><span>خطأ في الاتصال بالخادم</span></div>;
-  if (isLoading) return <div className="wrapper flexCenter" style={{height: "60vh"}}><PuffLoader color="#4066ff" /></div>;
+  if (isError) return <div className="p-wrapper flexCenter paddings">خطأ في الاتصال بالسيرفر</div>;
+  if (isLoading) return <div className="p-wrapper flexCenter paddings" style={{ height: "60vh" }}><PuffLoader color="#4066ff" /></div>;
 
   return (
-    <div className="wrapper">
-      <div className="flexColCenter paddings innerWidth properties-container">
+    <div className="p-wrapper font-arabic" style={{ direction: 'rtl' }}>
+      <div className="p-container paddings innerWidth">
         
-        <h2 className="primaryText">العقارات المتاحة في ولاية الجلفة</h2>
+        {/* شريط العنوان بستايل ADAR */}
+        <div className="p-header flexStart gap-4">
+          <MdLocationPin size={30} color="#f6ad55" />
+          <h2 className="primaryText text-3xl">العقارات المتاحة في ولاية الجلفة</h2>
+        </div>
         
-        <SearchBar filter={filter} setFilter={setFilter} />
+        {/* شريط البحث المحدث (سنقوم بتعديله أدناه) */}
+        <SearchBar 
+          filter={filter} 
+          setFilter={setFilter} 
+          allowedCities={allowedCities} 
+          djelfaAreas={djelfaAreas} 
+          // priceDisabled={true} // قمنا بتجميد شريط السعر من الـ props
+        />
 
-        <div className="paddings flexCenter properties">
+        {/* شبكة العقارات ببطاقات محسنة Quality (Shadows, No Dollar) */}
+        <div className="p-grid-cards mt-10">
           {filteredProperties && filteredProperties.length > 0 ? (
             filteredProperties.map((card, i) => (
-              
-              // 2. تعديل: وضع تصميم البطاقة مباشرة هنا (لأنه لا يوجد PropertyCard)
-              // أضفنا onClick لتفعيل الانتقال لصفحة التفاصيل
               <div 
                 key={i} 
-                className="flexColStart r-card" 
-                onClick={() => navigate(`../properties/${card.id}`)} // حل مشكلة الصفحة البيضاء
-                style={{cursor: 'pointer'}} // لجعل الماوس يتغير عند الحوم
+                className="p-card flexColStart gap-2" 
+                onClick={() => navigate(`../properties/${card.id}`)}
+                style={{cursor: 'pointer'}}
               >
-                <img 
-                  // استخدام الدالة الذكية التي أنشأناها في الأعلى
-                  src={getImageUrl(card.image)} 
-                  alt={card.title || "عقار"} 
-                  className="w-full h-48 object-cover rounded-xl"
-                  // حل أخير في حال فشل تحميل الصورة تماماً
-                  onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src = "https://via.placeholder.com/400x300?text=Error+Loading+Image";
-                  }}
-                />
+                {/* الصورة - دالة getSafeImage وحماية onError*/ }
+                <div className="p-image-box">
+                  <img 
+                    src={getSafeImage(card.image)} 
+                    alt={card.title} 
+                    className="w-full h-56 object-cover rounded-xl"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = "https://via.placeholder.com/400x300?text=Error+Loading+Image";
+                    }}
+                  />
+                </div>
                 
-                <span className="secondaryText r-price">
-                  <span style={{ color: "orange" }}>$</span>
-                  <span>{card.price}</span>
-                </span>
-                <span className="primaryText">{card.title}</span>
-                <span className="secondaryText">{card.address}</span>
+                {/* السعر بدون دولار وبستايل برتقالي جودة وادي كنيس */}
+                <div className="p-price-tag mt-2">
+                  <span className="price">{card.price}</span>
+                  <span className="currency"> DA</span>
+                </div>
+                
+                {/* العنوان والموقع */}
+                <span className="primaryText text-lg font-bold">{card.title}</span>
+                <span className="secondaryText text-sm flexStart gap-1"><MdLocationPin size={16}/> {card.city}, {card.address}</span>
               </div>
-
             ))
           ) : (
-            <div className="flexCenter" style={{marginTop: "2rem", textAlign: "center"}}>
-              <h3 className="secondaryText">لا توجد نتائج تطابق بحثك حالياً في هذه المنطقة.</h3>
+            <div className="flexCenter" style={{marginTop: "3rem", textAlign: "center"}}>
+              <h3 className="secondaryText text-xl">لا توجد نتائج تطابق بحثك حالياً في هذه المناطق.</h3>
             </div>
           )}
         </div>
@@ -103,3 +115,4 @@ const Properties = () => {
 };
 
 export default Properties;
+ 

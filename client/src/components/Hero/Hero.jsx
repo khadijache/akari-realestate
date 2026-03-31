@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import "./Hero.css";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ const Hero = () => {
 
   return (
     <section className="hero-wrapper">
-      {/* طبقة الصورة الخلفية */}
+       
        <div className="hero-bg-container">
         <img src="./djelfa-adar.jpg" alt="Djelfa Real Estate" />
         <div className="hero-overlay"></div>
@@ -45,3 +45,5 @@ const Hero = () => {
 };
 
 export default Hero;
+{/* في ملف الصفحة الرئيسية (غالباً Hero.jsx أو Value.jsx) */}
+ 

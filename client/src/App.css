@@ -1,4 +1,4 @@
-.App{
+/*.App{
   position: relative;
   overflow-x: clip;
   background-color: white;
@@ -15,4 +15,45 @@
   background: rgba(255, 255, 255, 0.522);
   filter: blur(100px);
   border-radius: 100px;
+}
+/* تنسيق احترافي موحد للمشروع */
+:root {
+  --primary: #1a365d; /* أزرق ملكي رصين */
+  --accent: #f6ad55;  /* برتقالي هادئ للتحفيز */
+  --bg: #f7fafc;
+}
+
+body {
+  font-family: 'Cairo', sans-serif !important;
+  background-color: var(--bg);
+  color: #2d3748;
+}
+
+.button {
+  background: var(--primary);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: 0.3s all ease;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* بطاقات العقارات بأسلوب احترافي */
+.property-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.property-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
